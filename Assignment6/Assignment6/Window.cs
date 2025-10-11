@@ -5,7 +5,6 @@
  */
 
 using System;
-using Assignment6;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
@@ -14,81 +13,81 @@ using OpenTK.Windowing.Desktop;
 
 namespace Assignment6
 {
-    // We now have a rotating rectangle but how can we make the view move based on the users input?
-    // In this tutorial we will take a look at how you could implement a camera class
-    // and start responding to user input.
-    // You can move to the camera class to see a lot of the new code added.
-    // Otherwise you can move to Load to see how the camera is initialized.
-
-    // In reality, we can't move the camera but we actually move the rectangle.
-    // This will explained more in depth in the web version, however it pretty much gives us the same result
-    // as if the view itself was moved.
     public class Window : GameWindow
     {
-        // Cube vertices (positions + texture coordinates)
-        private readonly float[] _vertices =
-        {
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-             0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-             0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-            -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-            -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-        };
-
-        private int _vertexBufferObject;
-        private int _vertexArrayObject;
+        private int _vbo;
+        private int _vao;
         private Shader _shader;
-        private Texture _texture;
-        private Texture _texture2;
 
-        // The view and projection matrices have been removed as we don't need them here anymore.
-        // They can now be found in the new camera class.
+        private int modelLoc;
+        private int viewLoc;
+        private int projLoc;
 
-        // We need an instance of the new camera class so it can manage the view and projection matrix code.
-        // We also need a boolean set to true to detect whether or not the mouse has been moved for the first time.
-        // Finally, we add the last position of the mouse so we can calculate the mouse offset easily.
+        private int lightPosition;
+        private int viewPosition;
+        private int lightColorPosition;
+        private int objectColorPosition;
+
+        private int _normalMatrixLocation;
+        private Vector3 lightStartingPos = new Vector3(1.2f, 1.0f, 2.0f);
+        private readonly Vector3 lightColor = new Vector3(1.0f, 1.0f, 1.0f);
+        private readonly Vector3 objectColor = new Vector3(0.8f, 0.2f, 0.2f);
+        private Vector3 newPosition; 
+
 
         // EXERCISE #1 - defining camera
         private Camera _camera;
         private bool _firstMove = true;
         private Vector2 _lastPos;
         private double _time;
+
+
+        // Cube vertices (positions + texture coordinates)
+        private readonly float[] _vertices =
+        {
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+             0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,
+
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+             0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+            -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+             0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+            -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        };
 
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
@@ -99,14 +98,14 @@ namespace Assignment6
         {
             base.OnLoad();
 
-            GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            GL.ClearColor(new Color4(0.4f, 0.2f, 0.5f, 1f));
             GL.Enable(EnableCap.DepthTest);
 
-            _vertexArrayObject = GL.GenVertexArray();
-            GL.BindVertexArray(_vertexArrayObject);
+            _vao = GL.GenVertexArray();
+            GL.BindVertexArray(_vao);
 
-            _vertexBufferObject = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferObject);
+            _vbo = GL.GenBuffer();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
 
             _shader = new Shader("Shaders/shader.vert", "Shaders/shader.frag");
@@ -114,26 +113,24 @@ namespace Assignment6
 
             var vertexLocation = _shader.GetAttribLocation("aPosition");
             GL.EnableVertexAttribArray(vertexLocation);
-            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), 0);
+            GL.VertexAttribPointer(vertexLocation, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 0);
 
-            var texCoordLocation = _shader.GetAttribLocation("aTexCoord");
-            GL.EnableVertexAttribArray(texCoordLocation);
-            GL.VertexAttribPointer(texCoordLocation, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), 3 * sizeof(float));
+            var normalLocation = _shader.GetAttribLocation("aNormal");
+            GL.EnableVertexAttribArray(normalLocation);
+            GL.VertexAttribPointer(normalLocation, 3, VertexAttribPointerType.Float, false, 6 * sizeof(float), 3 * sizeof(float));
 
-            _texture = Texture.LoadFromFile("Resources/container.png");
-            _texture.Use(TextureUnit.Texture0);
+            modelLoc = GL.GetUniformLocation(_shader.Handle, "model");
+            viewLoc = GL.GetUniformLocation(_shader.Handle, "view");
+            projLoc = GL.GetUniformLocation(_shader.Handle, "projection");
 
-            _texture2 = Texture.LoadFromFile("Resources/emoji.png");
-            _texture2.Use(TextureUnit.Texture1);
+            lightPosition = GL.GetUniformLocation(_shader.Handle, "lightPos");
+            viewPosition = GL.GetUniformLocation(_shader.Handle, "viewPos");
+            lightColorPosition = GL.GetUniformLocation(_shader.Handle, "lightColor");
+            objectColorPosition = GL.GetUniformLocation(_shader.Handle, "objectColor");
+            _normalMatrixLocation = GL.GetUniformLocation(_shader.Handle, "normalMatrix");
 
-            _shader.SetInt("texture0", 0);
-            _shader.SetInt("texture1", 1);
-
-            // We initialize the camera so that it is 3 units back from where the rectangle is.
-            // We also give it the proper aspect ratio.
-            _camera = new Camera(Vector3.UnitZ * 3, Size.X / (float)Size.Y);
-
-            // We make the mouse cursor invisible and captured so we can have proper FPS-camera movement.
+            _camera = new Camera(new Vector3(0, 0, 3), Size.X / (float)Size.Y);
+            newPosition = lightStartingPos - _camera.Position;
             CursorState = CursorState.Grabbed;
         }
 
@@ -145,18 +142,29 @@ namespace Assignment6
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-            GL.BindVertexArray(_vertexArrayObject);
-
-            _texture.Use(TextureUnit.Texture0);
-            _texture2.Use(TextureUnit.Texture1);
+            GL.BindVertexArray(_vao);
             _shader.Use();
 
-            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
-            _shader.SetMatrix4("model", model);
-            _shader.SetMatrix4("view", _camera.GetViewMatrix());
-            _shader.SetMatrix4("projection", _camera.GetProjectionMatrix());
+            Vector3 currentLightPos = _camera.Position + newPosition;
 
-            GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            GL.Uniform3(lightPosition, currentLightPos); 
+            GL.Uniform3(viewPosition, _camera.Position); 
+            GL.Uniform3(lightColorPosition, lightColor);
+            GL.Uniform3(objectColorPosition, objectColor);
+
+
+            var model = Matrix4.Identity * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
+            Matrix4 view = _camera.GetViewMatrix();
+            Matrix4 projection = _camera.GetProjectionMatrix();
+
+            Matrix4 normalMatrix = new Matrix4(Matrix3.Transpose(Matrix3.Invert(new Matrix3(model))));
+
+            GL.UniformMatrix4(modelLoc, false, ref model);
+            GL.UniformMatrix4(viewLoc, false, ref view);
+            GL.UniformMatrix4(projLoc, false, ref projection);
+            GL.UniformMatrix4(_normalMatrixLocation, false, ref normalMatrix);
+
+            GL.DrawArrays(PrimitiveType.Triangles, 0, _vertices.Length / 6); 
 
             SwapBuffers();
         }
@@ -165,11 +173,12 @@ namespace Assignment6
         {
             base.OnUpdateFrame(e);
 
-            if (!IsFocused) // Check to see if the window is focused
+            if (!IsFocused)
             {
                 return;
             }
             var input = KeyboardState;
+            float time = (float)e.Time;
 
             if (input.IsKeyDown(Keys.Escape))
             {
@@ -177,59 +186,57 @@ namespace Assignment6
             }
 
             const float cameraSpeed = 1.5f;
-            const float sensitivity = 0.2f;
 
             // EXERCISE #2 - keyboard movement based on user's input
-            if (input.IsKeyDown(Keys.W))
+            if (input.IsKeyDown(Keys.W)) 
             {
                 _camera.Position += _camera.Front * cameraSpeed * (float)e.Time; // Forward
             }
 
-            if (input.IsKeyDown(Keys.S))
-            {
+            if (input.IsKeyDown(Keys.S)) { 
                 _camera.Position -= _camera.Front * cameraSpeed * (float)e.Time; // Backwards
             }
-            if (input.IsKeyDown(Keys.A))
-            {
+
+            if (input.IsKeyDown(Keys.A)) {
                 _camera.Position -= _camera.Right * cameraSpeed * (float)e.Time; // Left
             }
-            if (input.IsKeyDown(Keys.D))
-            {
+
+            if (input.IsKeyDown(Keys.D)) { 
                 _camera.Position += _camera.Right * cameraSpeed * (float)e.Time; // Right
             }
-            if (input.IsKeyDown(Keys.Space))
-            {
-                _camera.Position += _camera.Up * cameraSpeed * (float)e.Time; // Up
-            }
-            if (input.IsKeyDown(Keys.LeftShift))
-            {
-                _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time; // Down
+
+            if (input.IsKeyDown(Keys.Space)) { 
+                _camera.Position += _camera.Up * cameraSpeed * (float)e.Time;    // Up
             }
 
-            // EXERCISE #3 - controlling the move movement/position
-            // Get the mouse state
-            var mouse = MouseState;
-            if (_firstMove) // This bool variable is initially set to true.
+            if (input.IsKeyDown(Keys.LeftShift)) {
+                _camera.Position -= _camera.Up * cameraSpeed * (float)e.Time;   // Down
+            }
+
+        }
+
+        // EXERCISE #3 - controlling the move movement/position
+        protected override void OnMouseMove(MouseMoveEventArgs e)
+        {
+            const float sensitivity = 0.2f;
+
+            if (_firstMove)
             {
-                _lastPos = new Vector2(mouse.X, mouse.Y);
+                _lastPos = new Vector2(e.X, e.Y);
                 _firstMove = false;
             }
             else
             {
-                // Calculate the offset of the mouse position
-                var deltaX = mouse.X - _lastPos.X;
-                var deltaY = mouse.Y - _lastPos.Y;
-                _lastPos = new Vector2(mouse.X, mouse.Y);
+                var deltaX = e.X - _lastPos.X;
+                var deltaY = e.Y - _lastPos.Y;
+                _lastPos = new Vector2(e.X, e.Y);
 
-                // Apply the camera pitch and yaw (we clamp the pitch in the camera class)
                 _camera.Yaw += deltaX * sensitivity;
-                _camera.Pitch -= deltaY * sensitivity; // Reversed since y-coordinates range from bottom to top
+                _camera.Pitch -= deltaY * sensitivity;
             }
         }
 
         // EXERCISE #4 - controlling zoom functionality using mouse scroll wheel
-        // In the mouse wheel function, we manage all the zooming of the camera.
-        // This is simply done by changing the FOV of the camera.
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
@@ -240,8 +247,25 @@ namespace Assignment6
         {
             base.OnResize(e);
             GL.Viewport(0, 0, Size.X, Size.Y);
-            // We need to update the aspect ratio once the window has been resized.
-            _camera.AspectRatio = Size.X / (float)Size.Y;
+
+            if (_camera != null)
+            {
+                _camera.AspectRatio = Size.X / (float)Size.Y;
+            }
+        }
+
+        protected override void OnUnload()
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.BindVertexArray(0);
+            GL.UseProgram(0);
+
+            GL.DeleteBuffer(_vbo);
+            GL.DeleteVertexArray(_vao);
+            GL.DeleteProgram(_shader.Handle);
+
+            base.OnUnload();
         }
     }
 }
+
