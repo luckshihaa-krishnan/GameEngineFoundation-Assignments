@@ -6,8 +6,8 @@ This 3D game scene is built with OpenTK and C# in Visual Studio. This applicatio
 
 ## Gameplay Instructions
 Here are the instructions to navigate and control in the application:
-- In the start of the application, it will be pitch dark, which means that the light is off. To turn on the light, click on the key 'E' on your keyboard to turn on the light and see the room. You can click key 'E' again to turn off the light
-- You can move the mouse key to look around in the room
+- In the start of the application, it will be pitch dark, which means that the light is turned off. To turn on the light, click on the key 'E' to turn on the light and see the room. You can click key 'E' again to turn off the light
+- You can move the mouse to look around in the room
 - You can press key 'W' to move forward
 - You can press key 'S' to move backward
 - You can press key 'A' to move left
@@ -23,7 +23,7 @@ Here are some features that have been implemented in this application:
 - Interaction to toggle the light switch
 
 ## How to build/run the project
-The packages used in this application that needs to be installed through NuGet packages are OpenTK, StbImageSharp and System.Drawing.Common. Some dependancies used in the application are OpenTK.Graphics.OpenGL4 to create graphics, OpenTK.Mathematics for math tools, System.Drawing.Imaging to manage images such as the texture image, etc. To build and run the project on Visual Studio, there is a green play button that allows you to start the application
+The packages used in this application that needs to be installed through NuGet packages are OpenTK, StbImageSharp and System.Drawing.Common. Some dependancies used in the application are OpenTK.Graphics.OpenGL4 to create graphics, OpenTK.Mathematics for math tools, System.Drawing.Imaging to manage images such as the texture image, and many more dependancies. To build and run the project on Visual Studio, there is a green play button that allows you to start the application.
 
 ## Credits
 Textured image for the room is from https://polyhaven.com/textures
