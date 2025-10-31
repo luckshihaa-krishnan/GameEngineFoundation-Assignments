@@ -5,7 +5,7 @@
 This 3D game scene is built with OpenTK and C# in Visual Studio. This application is a small game scene which consist the user of being and navigating in the textured brick room using their keyboard, controlling light switch and viewing 3D objects.
 
 ## Gameplay Instructions
-Here are the instructions to navigate and control the user in the application:
+Here are the instructions to navigate and control in the application:
 - In the start of the application, it will be pitch dark, which means that the light is off. To turn on the light, click on the key 'E' on your keyboard to turn on the light and see the room. You can click key 'E' again to turn off the light
 - You can move the mouse key to look around in the room
 - You can press key 'W' to move forward
