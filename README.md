@@ -1,3 +1,5 @@
-# GameEngineFoundation-Assignments
+# Midterm Project - 3D Scene
 
-Here are all my assignments from Game Engine Foundations. Each Assignment is location in different branches
+### Description
+
+## Gameplay Instructions
