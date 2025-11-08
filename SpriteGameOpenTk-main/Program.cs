@@ -1,5 +1,4 @@
 ﻿// File: Program.cs
-//
 // Fix explained: some OpenTK versions expose
 // Matrix4.CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNear, float zFar)
 // but older/newer API names may differ (e.g., near, far). Using *named* args can break across versions.
@@ -13,7 +12,7 @@ using OpenTK.Mathematics;                            // Matrix4, Vector types
 using System;
 using System.IO;
 using ImageSharp = SixLabors.ImageSharp.Image;       // Alias for brevity
-using SixLabors.ImageSharp.PixelFormats;             // Rgba32 pixel type
+using SixLabors.ImageSharp.PixelFormats;             // Rgba32 pixel type           
 
 namespace OpenTK_Sprite_Animation
 {
