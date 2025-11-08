@@ -1,5 +1,4 @@
-﻿// File: Program.cs
-// Fix explained: some OpenTK versions expose
+﻿// Fix explained: some OpenTK versions expose
 // Matrix4.CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNear, float zFar)
 // but older/newer API names may differ (e.g., near, far). Using *named* args can break across versions.
 // We switch to *positional* args to be version-agnostic: CreateOrthographicOffCenter(0, 800, 0, 600, -1, 1).
