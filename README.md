@@ -48,7 +48,7 @@ used one of those images and implemented one action, it did not come out as expe
 I was able to see the background of the image, which was a white and grey pixel background. 
 The action worked fine, but with the background being visible, it does not look professional 
 and not a good start to a sprite game. I then decided to find some websites that might have 
-better sprite images I can use, which I found this: https://craftpix.net/categorys/sprite. 
+better sprite images I can use, which I found this: https://craftpix.net/categorys/sprites/. 
 After a successful download of the sprite image, I was able to successfully move the character 
 around the frame with more adjustments.
 
@@ -61,5 +61,5 @@ This line of code clamps the character's position, which restricts them from lea
 
 
 ### Resources
-Professor's sample code I cloned: https://github.com/mouraleonardo/SpriteGameOpenTk     
-Sprite image I used: https://craftpix.net/categorys/sprite
+Professor's sample code I cloned: https://github.com/mouraleonardo/SpriteGameOpenTk   
+Sprite image I used: https://craftpix.net/categorys/sprites/
