@@ -24,5 +24,5 @@ Another challenge I faced was that after implementing the walk and run actions a
 
 
 ## Resources
-Professor's sample code I cloned: https://github.com/mouraleonardo/SpriteGameOpenTk
+Professor's sample code I cloned: https://github.com/mouraleonardo/SpriteGameOpenTk     
 Sprite image I used: https://craftpix.net/categorys/sprite
