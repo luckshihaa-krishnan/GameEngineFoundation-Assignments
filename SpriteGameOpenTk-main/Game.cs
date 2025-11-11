@@ -182,6 +182,7 @@ namespace OpenTK_Sprite_Animation
 
         protected override void OnUnload()
         {
+            // Deleting shader program, textures, buffers
             GL.DeleteProgram(_shaderProgram);
             GL.DeleteTexture(_walkTexture);
             GL.DeleteTexture(_runTexture);
