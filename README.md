@@ -55,7 +55,7 @@ around the frame with more adjustments.
 Another challenge I faced was that after implementing the walk and run actions and when testing 
 it out, I noticed that the character goes beyond the frame, which is not user friendly. 
 The character would need to stop at the end of the frame so that the character is always 
-visible by users. I resolved this issue by doing research and decided to use the method 'Clamp'.
+visible by users. I resolved this issue by using the method 'Clamp'.
 This is the line I added: _position.X = MathHelper.Clamp(_position.X, 100 - 100, Size.X - 100 + 60); 
 This line of code clamps the character's position, which restricts them from leaving the frame.
 
