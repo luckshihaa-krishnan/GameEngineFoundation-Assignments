@@ -26,10 +26,11 @@ namespace OpenTK_Sprite_Animation
         private int _walkTexture, _runTexture, _shotTexture, _attackTexture;    // Sprite Sheets 
         private int _projLoc, _modelLoc;
 
-        private Vector2 _position = new(400, 300);
-        private  float _walkSpeed = 200f;
-        private float _runSpeed = 350f;
+        private Vector2 _position = new(400, 300);      // Starting position
+        private  float _walkSpeed = 200f;               // Walking speed    
+        private float _runSpeed = 350f;                 // Running speed
 
+        // Constructor
         public SpriteAnimationGame(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings)
             : base(gameWindowSettings, nativeWindowSettings)
         {
@@ -42,7 +43,9 @@ namespace OpenTK_Sprite_Animation
             GL.Enable(EnableCap.Blend);                // Enable alpha blending
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            _shaderProgram = CreateShaderProgram();
+            _shaderProgram = CreateShaderProgram();         // Compile and link shaders
+
+            // Upload sprite sheets
             _walkTexture = LoadTexture("Walk.png");
             _runTexture = LoadTexture("Run.png");
             _shotTexture = LoadTexture("Shot_2.png");
@@ -76,12 +79,14 @@ namespace OpenTK_Sprite_Animation
 
             GL.UseProgram(_shaderProgram);
 
+            // Bind sampler to texture unit 0 
             int texLoc = GL.GetUniformLocation(_shaderProgram, "uTexture");
             GL.Uniform1(texLoc, 0);
 
             _projLoc = GL.GetUniformLocation(_shaderProgram, "projection");
             _modelLoc = GL.GetUniformLocation(_shaderProgram, "model");
 
+            // Orthographic projection (pixel coordinates 0..800, 0..600)
             Matrix4 ortho = Matrix4.CreateOrthographicOffCenter(0, 800, 0, 600, -1, 1);
             GL.UniformMatrix4(_projLoc, false, ref ortho);
 
@@ -96,6 +101,7 @@ namespace OpenTK_Sprite_Animation
         {
             base.OnUpdateFrame(e);
 
+            // Read keyboard state -> map to direction + action
             var keyboard = KeyboardState;
             Direction dir = Direction.None;
             Action action = Action.Idle;
@@ -103,32 +109,40 @@ namespace OpenTK_Sprite_Animation
             bool _isMoving = false;
             float speed = _walkSpeed;
 
+            // If right arrow is pressed, move to right direction
             if (keyboard.IsKeyDown(Keys.Right))
             {
                 dir = Direction.Right;
                 _isMoving = true;
             }
+
+            // If left arrow is pressed, move to left direction
             else if (keyboard.IsKeyDown(Keys.Left))
             {
                 dir = Direction.Left;
                 _isMoving = true;
             }
 
+            // If shift key is pressed, increase speed to run speed
             if (keyboard.IsKeyDown(Keys.LeftShift) || keyboard.IsKeyDown(Keys.RightShift))
             {
                 speed = _runSpeed;
             }
 
+            // If S key is pressed, do shoot action
             if (keyboard.IsKeyDown(Keys.S))
             {
                 action = Action.Shot;
                 dir = Direction.None;
             }
+
+            // If A key is pressed, do attack action
             else if (keyboard.IsKeyDown(Keys.A))
             {
                 action = Action.Attack;
                 dir = Direction.None;
             }
+
             else if (_isMoving)
             {
                 if (speed == _runSpeed)
@@ -144,7 +158,7 @@ namespace OpenTK_Sprite_Animation
                 _position.X += (dir == Direction.Right ? 1 : -1) * speed * (float)e.Time;
 
                 // Clamp position to window bounds
-                _position.X = MathHelper.Clamp(_position.X, 100 - 100, Size.X - 100 + 60);
+                _position.X = MathHelper.Clamp(_position.X, 25, Size.X - 40);
             }
 
             // Update character only if action changed or not idle
@@ -161,9 +175,11 @@ namespace OpenTK_Sprite_Animation
 
             GL.UseProgram(_shaderProgram);
 
+            // Model matrix
             Matrix4 model = Matrix4.Identity;
             model *= Matrix4.CreateTranslation(_position.X, _position.Y, 0);
 
+            // Mirror or reflect the model to face left
             if (_character.isRefected)
             {
                 model *= Matrix4.CreateScale(-1, 1, 1);
@@ -195,6 +211,7 @@ namespace OpenTK_Sprite_Animation
 
         private int CreateShaderProgram()
         {
+            // Load shader source code from files
             string vs = File.ReadAllText("Shaders/vertex.glsl");
             string fs = File.ReadAllText("Shaders/fragment.glsl");
 
@@ -238,6 +255,7 @@ namespace OpenTK_Sprite_Animation
 
         private int LoadTexture(string path)
         {
+            // Check if file exists and can be opened
             if (!File.Exists(path)) 
             { 
                 throw new FileNotFoundException($"Texture not found: {path}"); 
@@ -267,6 +285,7 @@ namespace OpenTK_Sprite_Animation
         }
     }
 
+    // Direction and Action input abstractions
     public enum Direction { None, Right, Left }
     public enum Action { Idle, Walk, Run, Shot, Attack }
 
@@ -280,12 +299,13 @@ namespace OpenTK_Sprite_Animation
 
         public Action _currentAction { get; private set; } = Action.Idle;
 
+        // If the character faces left, reflect sprite
         public bool isRefected => _currentDir == Direction.Left;
 
         // Texture 
         private readonly int _walkTex, _runTex, _shotTex, _attackTex;
 
-        // Timing and frame counds for each action
+        // Timing and frame counts for each action
         private const float _walkFrameTime = 0.08f;
         private const int _walkFrameCount = 7;
 
@@ -314,6 +334,7 @@ namespace OpenTK_Sprite_Animation
 
         public Character(int shader, int walkTex, int runTex, int shotTex, int attackTex)
         {
+            // Initialize character state
             _shader = shader;
             _walkTex = walkTex;
             _runTex = runTex;
@@ -324,11 +345,13 @@ namespace OpenTK_Sprite_Animation
 
         public void Update(float delta, Direction dir, Action action)
         {
+            // Update direction if not none
             if (dir != Direction.None)
             {
                 _currentDir = dir;
             }
 
+            // If started moving or changed side: restart cycle
             if (action != _currentAction)
             {
                 _timer = 0f;
@@ -348,6 +371,7 @@ namespace OpenTK_Sprite_Animation
             float FrameW;
             float SheetW;
 
+            // If action is walking, set walking texture, frame time, frame count, frame width and sheet width 
             if (_currentAction == Action.Walk)
             {
                 Texture = _walkTex;
@@ -356,7 +380,9 @@ namespace OpenTK_Sprite_Animation
                 FrameW = _walkFrameW;
                 SheetW = _walkSheetW;
             }
-            else if(_currentAction == Action.Run)
+
+            // If action is running, set running texture, frame time, frame count, frame width and sheet width
+            else if (_currentAction == Action.Run)
             {
                 Texture = _runTex;
                 FrameTime = _runFrameTime;
@@ -364,7 +390,9 @@ namespace OpenTK_Sprite_Animation
                 FrameW = _runFrameW;
                 SheetW = _runSheetW;
             }
-            else if(_currentAction == Action.Shot)
+
+            // If action is shooting, set shooting texture, frame time, frame count, frame width and sheet width
+            else if (_currentAction == Action.Shot)
             {
                 Texture = _shotTex;
                 FrameTime = _shotFrameTime;
@@ -372,7 +400,9 @@ namespace OpenTK_Sprite_Animation
                 FrameW = _shotFrameW;
                 SheetW = _shotSheetW;
             }
-            else if(_currentAction == Action.Attack)
+
+            // If action is attacking, set attacking texture, frame time, frame count, frame width and sheet width
+            else if (_currentAction == Action.Attack)
             {
                 Texture = _attackTex;
                 FrameTime = _attackFrameTime;
@@ -380,6 +410,8 @@ namespace OpenTK_Sprite_Animation
                 FrameW = _attackFrameW;
                 SheetW = _attackSheetW;
             }
+
+            // Else set to default walking parameters
             else
             {
                 Texture = _walkTex;
@@ -413,18 +445,25 @@ namespace OpenTK_Sprite_Animation
         {
             int texture;
 
-            if(_currentAction == Action.Run)
+            // If current action is running, set running texture
+            if (_currentAction == Action.Run)
             {
                 texture = _runTex;
             }
-            else if(_currentAction == Action.Shot)
+
+            // If current action is shooting, set shooting texture
+            else if (_currentAction == Action.Shot)
             {
                 texture = _shotTex;
             }
-            else if(_currentAction == Action.Attack)
+
+            // If current action is attacking, set attacking texture
+            else if (_currentAction == Action.Attack)
             {
                 texture = _attackTex;
             }
+
+            // If current action is walking, set walking texture
             else
             {
                 texture = _walkTex;
@@ -436,10 +475,10 @@ namespace OpenTK_Sprite_Animation
 
         private void SetFrame(int col, int texture, float frameW, float sheetW)
         {
-            float x = (col * frameW) / sheetW;
-            float y = 0f;
-            float w = frameW / sheetW;
-            float h = 1.0f;
+            float x = (col * frameW) / sheetW;  // normalized start U
+            float y = 0f;                       // normalized start V
+            float w = frameW / sheetW;          // normalized width
+            float h = 1.0f;                    // normalized height         
 
             GL.UseProgram(_shader);
             int off = GL.GetUniformLocation(_shader, "uOffset");
