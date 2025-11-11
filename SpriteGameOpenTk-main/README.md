@@ -14,7 +14,7 @@ it uses new sprite character and animations.
 ### What new movements you implemented
 
 The character being used in this game is a soldier, which contains movements such as 
-walking, running, shooting and attacking. I first got the sprite game character in 
+walking, running, shooting and attacking. I first got the sprite game character from 
 this website (https://craftpix.net/categorys/sprites/) which contains many sprite 
 characters. There are four .png images that represent each movement of the character.
 
@@ -44,20 +44,19 @@ we will not see the full attack motion.
 The first challenge I faced when starting this project is finding a good sprite image. 
 I first went on Google and searched up 'sprite game', and there were some good images I 
 can use for this project as it contains actions such as running, punching, etc. When I 
-used one of those images and imeplemented one action, it did not come out as expected. 
+used one of those images and implemented one action, it did not come out as expected. 
 I was able to see the background of the image, which was a white and grey pixel background. 
 The action worked fine, but with the background being visible, it does not look professional 
-and not a good start to a sprite game. I then decided to find some websites that can have 
+and not a good start to a sprite game. I then decided to find some websites that might have 
 better sprite images I can use, which I found this: https://craftpix.net/categorys/sprite. 
 After a successful download of the sprite image, I was able to successfully move the character 
 around the frame with more adjustments.
 
 Another challenge I faced was that after implementing the walk and run actions and when testing 
-it out, I noticed that the character runs beyond the frame, which is not user friendly. 
+it out, I noticed that the character goes beyond the frame, which is not user friendly. 
 The character would need to stop at the end of the frame so that the character is always 
-visible by users. I resolved this issue by reviewing my professor's sample code 
-(https://github.com/mouraleonardo/SpriteGameOpen) to see which line of code I missed, 
-and it was this: _position.X = MathHelper.Clamp(_position.X, 100 - 100, Size.X - 100 + 60); 
+visible by users. I resolved this issue by doing research and decided to use the method 'Clamp'.
+This is the line I added: _position.X = MathHelper.Clamp(_position.X, 100 - 100, Size.X - 100 + 60); 
 This line of code clamps the character's position, which restricts them from leaving the frame.
 
 
