@@ -39,7 +39,7 @@ we need to press the key 'A' for longer time to view the attack action because o
 we will not see the full attack motion.
 
 
-## Any challenges faced and how you solved them.
+### Any challenges faced and how you solved them.
 
 The first challenge I faced when starting this project is finding a good sprite image. 
 I first went on Google and searched up 'sprite game', and there were some good images I 
@@ -60,6 +60,6 @@ This is the line I added: _position.X = MathHelper.Clamp(_position.X, 100 - 100,
 This line of code clamps the character's position, which restricts them from leaving the frame.
 
 
-## Resources
+### Resources
 Professor's sample code I cloned: https://github.com/mouraleonardo/SpriteGameOpenTk     
 Sprite image I used: https://craftpix.net/categorys/sprite
