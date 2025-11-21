@@ -2,7 +2,7 @@
  * Name: Luckshihaa Krishnan 
  * Student ID: 186418216
  * Section: GAM 531 NSA 
- */
+ */  
 
 
 using System;
@@ -109,6 +109,7 @@ namespace Assignment9
             GL.Uniform3(GL.GetUniformLocation(Handle, name), data);
         }
 
+        // Function to set uniform bool on this shader
         public void SetBool(string name, bool value)
         {
             int num;
@@ -123,6 +124,7 @@ namespace Assignment9
                 GL.Uniform1(GL.GetUniformLocation(Handle, name), num);
         }
 
+        // Delete shader program
         public void Dispose()
         {
             GL.DeleteProgram(Handle); 

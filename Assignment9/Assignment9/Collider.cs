@@ -14,6 +14,7 @@ namespace Assignment9
 {
     public static class Collision
     {
+        // Check collision between a point and a GameObject
         public static bool CheckCollision(Vector3 point, GameObject obj)
         {
             // min and max points
