@@ -1,3 +1,2 @@
-# Luckshihaa Krishnan - GameEngineFoundation-Assignments
+# GAM531_Final_Project
 
-Here are all my assignments from Game Engine Foundations. Each Assignment is located in different branches
